@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FinancialApp.MainPage">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+
+            <!-- Logo Image and label -->
+            <Image Source="logo.png"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Start"
+                   HeightRequest="100" />
+
+            <Label Text="Login"
+                   FontSize="32"
+                   HorizontalOptions="Center"
+                   Margin="0,20,0,10" />
+
+            <!-- Phone Entry -->
+            <Entry x:Name="PhoneNumberLoginEntry"
+                   Placeholder="Enter Phone Number"
+                   Keyboard="Telephone"
+                   HorizontalOptions="FillAndExpand" />
+
+            <!-- Password Entry -->
+            <Entry x:Name="PasswordLoginEntry"
+                   Placeholder="Enter Password"
+                   IsPassword="True"
+                   HorizontalOptions="FillAndExpand"
+                   Margin="0,10,0,0" />
+
+            <!-- Login Button -->
+            <Button Text="Login"
+                    HorizontalOptions="Center"
+                    VerticalOptions="End"
+                    BackgroundColor="LightGray"
+                    Clicked="OnLoginButtonClicked" />
+
+            <!-- Register Button -->
+            <Button Text="Register an Account"
+                    HorizontalOptions="Center"
+                    VerticalOptions="EndAndExpand"
+                    BackgroundColor="LightGray"
+                    Margin="0,20,0,0"
+                    Clicked="OnRegistrationButtonClicked" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

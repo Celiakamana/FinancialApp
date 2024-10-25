@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FinancialApp.TransactionsPage">
+
+
+
+    <Grid RowDefinitions="auto,*,auto">
+
+        <!-- Fixed Back Button Section -->
+        <Grid Grid.Row="0"
+              HeightRequest="70"
+              BackgroundColor="Transparent"
+              VerticalOptions="Start"
+              Padding="10">
+            <Button Text="⬅" 
+                    Clicked="OnBackButtonClicked"
+                    HorizontalOptions="Start"
+                    VerticalOptions="Center"
+                    FontSize="20"/>
+        </Grid>
+
+        <!-- Scrollable Main Content Section -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="20" Spacing="15">
+
+                <!-- Search Bar with QR Icon on Same Row -->
+                <Grid ColumnDefinitions="*,auto" 
+                      HorizontalOptions="FillAndExpand" 
+                      Margin="0,10,0,100">
+                    <SearchBar Placeholder="Search"
+                               HorizontalOptions="FillAndExpand" />
+
+                    <Button Text="MY QR"
+                            Clicked="OnQRCodeClicked"
+                            BackgroundColor="LightGrey"
+                            Grid.Column="1" 
+                            Padding="10" 
+                            Margin="10,0,0,0" />
+                </Grid>
+
+                <!-- Send Button -->
+                <Button Text="Send"
+                        HorizontalOptions="Center"
+                        BackgroundColor="LightGray"
+                        Clicked="OnSendButtonClicked" />
+
+                <!-- Request Button -->
+                <Button Text="Request"
+                        HorizontalOptions="Center"
+                        BackgroundColor="LightGray"
+                        Margin="0,10,0,0"
+                        Clicked="OnRequestButtonClicked" />
+
+                <!-- PayBill Button -->
+                <Button Text="PayBill"
+                        HorizontalOptions="Center"
+                        BackgroundColor="LightGray"
+                        Margin="0,10,0,0"
+                        Clicked="OnPayBillButtonClicked" />
+            </VerticalStackLayout>
+        </ScrollView>
+
+
+        <!-- Fixed Bottom Navigation Section -->
+        <Grid Grid.Row="2" 
+              Padding="10"
+              BackgroundColor="Transparent"
+              HorizontalOptions="Center"
+              VerticalOptions="End">
+
+            <HorizontalStackLayout HorizontalOptions="Center"
+                                   VerticalOptions="Center"
+                                   Spacing="30">
+
+                <!-- Home Icon and Label -->
+                <VerticalStackLayout HorizontalOptions="Center"
+                                     VerticalOptions="Center">
+                    <Button Text="🏠"
+                            Clicked="OnHomeIconClicked" 
+                            BackgroundColor="Transparent" />
+                    <Label Text="HOME"
+                           FontSize="14" 
+                           HorizontalOptions="Center" />
+                </VerticalStackLayout>
+
+                <!-- Transactions Icon and Label -->
+                <VerticalStackLayout HorizontalOptions="Center"
+                                     VerticalOptions="Center">
+                    <Button Text="🔄" 
+                            Clicked="OnTransactionIconClicked" 
+                            BackgroundColor="Transparent" />
+                    <Label Text="TRANSACTIONS" 
+                           FontSize="14" 
+                           HorizontalOptions="Center" />
+                </VerticalStackLayout>
+
+                <!-- Notifications Icon and Label -->
+                <VerticalStackLayout HorizontalOptions="Center"
+                                     VerticalOptions="Center">
+                    <Button Text="🔔" 
+                            Clicked="OnNotificationIconClicked" 
+                            BackgroundColor="Transparent" />
+                    <Label Text="NOTIFICATIONS" 
+                           FontSize="14" 
+                           HorizontalOptions="Center" />
+                </VerticalStackLayout>
+
+            </HorizontalStackLayout>
+        </Grid>
+
+
+    </Grid>
+</ContentPage>
