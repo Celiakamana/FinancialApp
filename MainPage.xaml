@@ -32,17 +32,12 @@
 
             <!-- Login Button -->
             <Button Text="Login"
-                    HorizontalOptions="Center"
-                    VerticalOptions="End"
-                    BackgroundColor="LightGray"
+                    Style="{StaticResource StandardButton}"
                     Clicked="OnLoginButtonClicked" />
 
             <!-- Register Button -->
             <Button Text="Register an Account"
-                    HorizontalOptions="Center"
-                    VerticalOptions="EndAndExpand"
-                    BackgroundColor="LightGray"
-                    Margin="0,20,0,0"
+                    Style="{StaticResource StandardButton}"
                     Clicked="OnRegistrationButtonClicked" />
         </VerticalStackLayout>
     </ScrollView>

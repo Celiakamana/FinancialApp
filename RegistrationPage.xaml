@@ -8,15 +8,14 @@
 
         <!-- Fixed Back Button Section -->
         <Grid Grid.Row="0"
-              HeightRequest="70"
-              BackgroundColor="Transparent"
+              HeightRequest="50"
               VerticalOptions="Start"
               Padding="10">
+            
             <Button Text="⬅" 
                     Clicked="OnBackButtonClicked"
                     HorizontalOptions="Start"
-                    VerticalOptions="Center"
-                    FontSize="20"/>
+                    Style="{StaticResource BackButtonStyle}"/>
         </Grid>
 
         <!-- Scrollable Main Content Section -->
@@ -70,11 +69,8 @@
 
                 <!-- Register Button -->
                 <Button Text="Register"
-                HorizontalOptions="Center"
-                VerticalOptions="EndAndExpand"
-                BackgroundColor="LightGray"
-                Margin="0,20,0,0"
-                Clicked="OnRegisterButtonClicked"/>
+                        Style="{StaticResource StandardButton}"
+                        Clicked="OnRegisterButtonClicked"/>
             </VerticalStackLayout>
 
         </ScrollView>

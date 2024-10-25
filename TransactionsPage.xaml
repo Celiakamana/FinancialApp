@@ -3,21 +3,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="FinancialApp.TransactionsPage">
 
-
-
     <Grid RowDefinitions="auto,*,auto">
 
         <!-- Fixed Back Button Section -->
         <Grid Grid.Row="0"
-              HeightRequest="70"
-              BackgroundColor="Transparent"
+              HeightRequest="50"
               VerticalOptions="Start"
               Padding="10">
+            
             <Button Text="⬅" 
                     Clicked="OnBackButtonClicked"
-                    HorizontalOptions="Start"
-                    VerticalOptions="Center"
-                    FontSize="20"/>
+                    Style="{StaticResource BackButtonStyle}" />
         </Grid>
 
         <!-- Scrollable Main Content Section -->
@@ -27,40 +23,34 @@
                 <!-- Search Bar with QR Icon on Same Row -->
                 <Grid ColumnDefinitions="*,auto" 
                       HorizontalOptions="FillAndExpand" 
-                      Margin="0,10,0,100">
+                      Margin="0,10,0,100"
+                      ColumnSpacing="15">
+                    
                     <SearchBar Placeholder="Search"
                                HorizontalOptions="FillAndExpand" />
 
                     <Button Text="MY QR"
+                            Style="{StaticResource StandardButton}"
                             Clicked="OnQRCodeClicked"
-                            BackgroundColor="LightGrey"
-                            Grid.Column="1" 
-                            Padding="10" 
-                            Margin="10,0,0,0" />
+                            Grid.Column="1" />
                 </Grid>
 
                 <!-- Send Button -->
                 <Button Text="Send"
-                        HorizontalOptions="Center"
-                        BackgroundColor="LightGray"
+                        Style="{StaticResource StandardButton}"
                         Clicked="OnSendButtonClicked" />
 
                 <!-- Request Button -->
                 <Button Text="Request"
-                        HorizontalOptions="Center"
-                        BackgroundColor="LightGray"
-                        Margin="0,10,0,0"
+                        Style="{StaticResource StandardButton}"
                         Clicked="OnRequestButtonClicked" />
 
                 <!-- PayBill Button -->
                 <Button Text="PayBill"
-                        HorizontalOptions="Center"
-                        BackgroundColor="LightGray"
-                        Margin="0,10,0,0"
+                        Style="{StaticResource StandardButton}"
                         Clicked="OnPayBillButtonClicked" />
             </VerticalStackLayout>
         </ScrollView>
-
 
         <!-- Fixed Bottom Navigation Section -->
         <Grid Grid.Row="2" 
@@ -77,8 +67,8 @@
                 <VerticalStackLayout HorizontalOptions="Center"
                                      VerticalOptions="Center">
                     <Button Text="🏠"
-                            Clicked="OnHomeIconClicked" 
-                            BackgroundColor="Transparent" />
+                            Style="{StaticResource EmojiButton}"
+                            Clicked="OnHomeIconClicked" />
                     <Label Text="HOME"
                            FontSize="14" 
                            HorizontalOptions="Center" />
@@ -87,10 +77,10 @@
                 <!-- Transactions Icon and Label -->
                 <VerticalStackLayout HorizontalOptions="Center"
                                      VerticalOptions="Center">
-                    <Button Text="🔄" 
-                            Clicked="OnTransactionIconClicked" 
-                            BackgroundColor="Transparent" />
-                    <Label Text="TRANSACTIONS" 
+                    <Button Text="🔄"
+                            Style="{StaticResource EmojiButton}"
+                            Clicked="OnTransactionIconClicked" />
+                    <Label Text="TRANSACTIONS"
                            FontSize="14" 
                            HorizontalOptions="Center" />
                 </VerticalStackLayout>
@@ -98,17 +88,16 @@
                 <!-- Notifications Icon and Label -->
                 <VerticalStackLayout HorizontalOptions="Center"
                                      VerticalOptions="Center">
-                    <Button Text="🔔" 
-                            Clicked="OnNotificationIconClicked" 
-                            BackgroundColor="Transparent" />
-                    <Label Text="NOTIFICATIONS" 
+                    <Button Text="🔔"
+                            Style="{StaticResource EmojiButton}"
+                            Clicked="OnNotificationIconClicked" />
+                    <Label Text="NOTIFICATIONS"
                            FontSize="14" 
                            HorizontalOptions="Center" />
                 </VerticalStackLayout>
 
             </HorizontalStackLayout>
         </Grid>
-
 
     </Grid>
 </ContentPage>
