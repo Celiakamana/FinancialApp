@@ -64,6 +64,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="TransactionAmountPage.xaml.cs">
+	    <DependentUpon>TransactionAmountPage.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="TransactionsPage.xaml.cs">
 	    <DependentUpon>TransactionsPage.xaml</DependentUpon>
 	  </Compile>
@@ -73,6 +76,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="TransactionAmountPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="TransactionsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

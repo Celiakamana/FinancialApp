@@ -19,14 +19,16 @@ namespace FinancialApp
             // Handle QR code click here
         }
 
-        private void OnSendButtonClicked(object sender, EventArgs e)
+        private async void OnSendButtonClicked(object sender, EventArgs e)
         {
-            // Handle Send button click here
+            // Navigate to the TransactionAmountPage when the Send button is clicked
+            await Navigation.PushAsync(new TransactionAmountPage());
         }
 
-        private void OnRequestButtonClicked(object sender, EventArgs e)
+        private async void OnRequestButtonClicked(object sender, EventArgs e)
         {
-            // Handle Request button click here
+            // Navigate to the TransactionAmountPage when the Request button is clicked
+            await Navigation.PushAsync(new TransactionAmountPage());
         }
 
         private void OnPayBillButtonClicked(object sender, EventArgs e)
