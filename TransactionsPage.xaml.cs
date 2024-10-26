@@ -22,13 +22,13 @@ namespace FinancialApp
         private async void OnSendButtonClicked(object sender, EventArgs e)
         {
             // Navigate to the TransactionAmountPage when the Send button is clicked
-            await Navigation.PushAsync(new TransactionAmountPage());
+            await Navigation.PushAsync(new TransactionAmountSendPage());
         }
 
         private async void OnRequestButtonClicked(object sender, EventArgs e)
         {
             // Navigate to the TransactionAmountPage when the Request button is clicked
-            await Navigation.PushAsync(new TransactionAmountPage());
+            await Navigation.PushAsync(new TransactionAmountRequestPage());
         }
 
         private void OnPayBillButtonClicked(object sender, EventArgs e)

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FinancialApp.RequestByPhonePage">
+
+    <!-- Define the main grid layout for the page, with two rows: Top Bar, Main Content -->
+    <Grid RowDefinitions="auto,*">
+
+        <!-- Top Bar Section with Back and Cancel Buttons -->
+        <Grid Grid.Row="0" 
+              HeightRequest="50" 
+              VerticalOptions="Start" 
+              Padding="10"
+              ColumnDefinitions="*,auto"
+              Margin="0,10,0,50">
+            <!-- Back Button to navigate to the previous page -->
+            <Button Text="⬅" 
+                    Clicked="OnBackButtonClicked"
+                    HorizontalOptions="Start"
+                    Grid.Column="0"
+                    Style="{StaticResource BackButtonStyle}" />
+
+            <!-- Cancel Button to navigate back to TransactionsPage -->
+            <Button Text="✕" 
+                    Clicked="OnCancelButtonClicked"
+                    HorizontalOptions="End"
+                    Grid.Column="1"
+                    Style="{StaticResource CancelButtonStyle}" />
+        </Grid>
+
+        <!-- Scrollable Main Content Section -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="20" Spacing="15">
+                <!-- Search Entry for Contacts -->
+                <SearchBar Placeholder="Search Contacts" />
+
+                <!-- First Name Entry -->
+                <Entry x:Name="FirstNameEntry"
+                       Placeholder="Enter First Name"
+                       HorizontalOptions="FillAndExpand" />
+
+                <!-- Last Name Entry -->
+                <Entry x:Name="LastNameEntry"
+                       Placeholder="Enter Last Name"
+                       HorizontalOptions="FillAndExpand"
+                       Margin="0,10,0,0" />
+
+                <!-- Phone Number Entry -->
+                <Entry x:Name="PhoneNumberEntry"
+                       Placeholder="Enter Number"
+                       Keyboard="Telephone"
+                       HorizontalOptions="FillAndExpand"
+                       Margin="0,10,0,0" />
+
+                <!-- Request Button -->
+                <Button Text="Request"
+                        Style="{StaticResource StandardButton}"
+                        Clicked="OnRequestButtonClicked"
+                        Margin="0,30,0,0" />
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

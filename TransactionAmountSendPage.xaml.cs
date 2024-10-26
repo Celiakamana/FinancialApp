@@ -2,9 +2,9 @@ using Microsoft.Maui.Controls;
 
 namespace FinancialApp
 {
-    public partial class TransactionAmountPage : ContentPage
+    public partial class TransactionAmountSendPage : ContentPage
     {
-        public TransactionAmountPage()
+        public TransactionAmountSendPage()
         {
             InitializeComponent();
         }
@@ -24,10 +24,10 @@ namespace FinancialApp
         }
 
         // Method to handle the "By Phone" button click event
-        private void OnByPhoneButtonClicked(object sender, EventArgs e)
+        private async void OnByPhoneButtonClicked(object sender, EventArgs e)
         {
-            // Logic for handling transactions by phone
-            // Placeholder for future implementation
+            // Navigate to the SendByPhonePage when "By Phone" is selected
+            await Navigation.PushAsync(new SendByPhonePage());
         }
 
         // Method to handle the "By QR" button click event
