@@ -11,12 +11,14 @@ namespace FinancialApp
 
         private async void OnBackButtonClicked(object sender, EventArgs e)
         {
-            await Navigation.PopAsync();
+            // Navigate back to LoginPage(MainPage
+            await Navigation.PushAsync(new MainPage());
         }
 
-        private void OnQRCodeClicked(object sender, EventArgs e)
+        private async void OnQRCodeClicked(object sender, EventArgs e)
         {
             // Handle QR code click here
+            await DisplayAlert("My QR Code", "This button's logic will be implemented later.", "OK");
         }
 
         private async void OnSendButtonClicked(object sender, EventArgs e)
@@ -31,9 +33,10 @@ namespace FinancialApp
             await Navigation.PushAsync(new TransactionAmountRequestPage());
         }
 
-        private void OnPayBillButtonClicked(object sender, EventArgs e)
+        private async void OnPayBillButtonClicked(object sender, EventArgs e)
         {
-            // Handle PayBill button click here
+            // Logic for handling Pay Bill (placeholder for future implementation)
+            await DisplayAlert("Pay Bill", "This button's logic will be implemented later.", "OK");
         }
 
         private void OnHomeIconClicked(object sender, EventArgs e)
@@ -41,14 +44,16 @@ namespace FinancialApp
             // Navigate to the home page
         }
 
-        private void OnTransactionIconClicked(object sender, EventArgs e)
+        private async  void OnTransactionIconClicked(object sender, EventArgs e)
         {
             // Handle transaction icon click
+            await DisplayAlert("Recent Transactions List", "This button's logic will be implemented later.", "OK");
         }
 
-        private void OnNotificationIconClicked(object sender, EventArgs e)
+        private async void OnNotificationIconClicked(object sender, EventArgs e)
         {
-            // Handle notification icon click
+            // Handle Notifications icon click
+            await DisplayAlert("Recent Notifications List", "This button's logic will be implemented later.", "OK");
         }
     }
 }

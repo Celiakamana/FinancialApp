@@ -13,6 +13,7 @@
               Padding="10"
               ColumnDefinitions="*,auto"
               Margin="0,10,0,50">
+            
             <!-- Back Button to navigate to the previous page -->
             <Button Text="⬅" 
                     Clicked="OnBackButtonClicked"
@@ -32,7 +33,8 @@
         <ScrollView Grid.Row="1">
             <VerticalStackLayout Padding="20" Spacing="15">
                 <!-- Search Entry for Contacts -->
-                <SearchBar Placeholder="Search Contacts" />
+                <SearchBar Placeholder="Search Contacts"
+                           Margin="0,10,0,100"/>
 
                 <!-- First Name Entry -->
                 <Entry x:Name="FirstNameEntry"

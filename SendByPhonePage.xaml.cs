@@ -1,13 +1,20 @@
-// SendByPhonePage.xaml.cs
+using Microsoft.Data.SqlClient;
 using Microsoft.Maui.Controls;
+using System;
+using System.Security.Cryptography;
+using System.Text;
+
 
 namespace FinancialApp
 {
     public partial class SendByPhonePage : ContentPage
     {
-        public SendByPhonePage()
+        private decimal amount; // Store the amount to be sent from previous page
+
+        public SendByPhonePage(decimal amount)
         {
             InitializeComponent();
+            this.amount = amount; // Initialize the amount field
         }
 
         // Method to handle the Back button click event
@@ -25,11 +32,61 @@ namespace FinancialApp
         }
 
         // Method to handle the Send button click event
-        private void OnSendButtonClicked(object sender, EventArgs e)
+        private async void OnSendButtonClicked(object sender, EventArgs e)
         {
-            // Logic for handling send action by phone
-            // Placeholder for future implementation
+            // Retrieve user input
+            string firstName = FirstNameEntry.Text;
+            string lastName = LastNameEntry.Text;
+            string phoneNumber = PhoneNumberEntry.Text;
+
+            // Check if all fields are filled
+            if (string.IsNullOrEmpty(firstName) || string.IsNullOrEmpty(lastName) || string.IsNullOrEmpty(phoneNumber))
+            {
+                await DisplayAlert("Error", "All fields must be filled", "OK");
+                return;
+            }
+
+            try
+            {
+                // Connection string to the UserRegistrationDB database
+                string connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=UserRegistrationDB;Integrated Security=True;";
+
+                // SQL query to verify if the provided information matches a user in the database
+                string query = @"SELECT COUNT(1) FROM UsersTable WHERE FirstName = @FirstName AND LastName = @LastName AND PhoneNumber = @PhoneNumber";
+
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    await conn.OpenAsync();
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        // Prevent SQL injection
+                        cmd.Parameters.AddWithValue("@FirstName", firstName);
+                        cmd.Parameters.AddWithValue("@LastName", lastName);
+                        cmd.Parameters.AddWithValue("@PhoneNumber", phoneNumber);
+
+                        // Execute the query
+                        int count = Convert.ToInt32(await cmd.ExecuteScalarAsync());
+
+                        // If a match is found, navigate to SendConfirmationPage
+                        if (count == 1)
+                        {
+                            await Navigation.PushAsync(new SendConfirmationPage(firstName, lastName, amount));
+                        }
+                        else
+                        {
+                            // If no match is found, show an error message
+                            await DisplayAlert("Error", "User not found", "OK");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle any errors that occur during database interaction
+                await DisplayAlert("Error", $"Database error: {ex.Message}", "OK");
+            }
         }
     }
-}
 
+} 

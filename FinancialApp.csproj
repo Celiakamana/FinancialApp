@@ -64,6 +64,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="RequestConfirmationPage.xaml.cs">
+	    <DependentUpon>RequestConfirmationPage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="SendConfirmationPage.xaml.cs">
+	    <DependentUpon>SendConfirmationPage.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="RequestByPhonePage.xaml.cs">
 	    <DependentUpon>RequestByPhonePage.xaml</DependentUpon>
 	  </Compile>
@@ -85,6 +91,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="RequestConfirmationPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="SendConfirmationPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="TransactionAmountRequestPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

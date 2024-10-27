@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FinancialApp.RequestConfirmationPage">
+
+    <!-- Define the main grid layout for the page, with two rows: Top Bar, Main Content -->
+    <Grid RowDefinitions="auto,*">
+
+        <!-- Top Bar Section with Back and Cancel Buttons -->
+        <Grid Grid.Row="0" 
+              HeightRequest="50" 
+              VerticalOptions="Start" 
+              Padding="10"
+              ColumnDefinitions="*,auto"
+              Margin="0,10,0,50">
+
+            <!-- Back Button to navigate to the previous page -->
+            <Button Text="⬅" 
+                    Clicked="OnBackButtonClicked"
+                    HorizontalOptions="Start"
+                    Grid.Column="0"
+                    Style="{StaticResource BackButtonStyle}" />
+
+            <!-- Cancel Button to navigate back to TransactionsPage -->
+            <Button Text="✕" 
+                    Clicked="OnCancelButtonClicked"
+                    HorizontalOptions="End"
+                    Grid.Column="1"
+                    Style="{StaticResource CancelButtonStyle}" />
+        </Grid>
+
+        <!-- Main Scrollable Content Section -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout  Padding="20" Spacing="20">
+
+                <!-- Text confirmation Label -->
+                        <Label Text="You are about to request money to"
+                               FontSize="24"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"
+                               Margin="0,0,0,10" />
+
+                        <!-- User Icon and Name Section -->
+                        <VerticalStackLayout HorizontalOptions="Center" 
+                                             VerticalOptions="Center" 
+                                             Spacing="5">
+                            
+                            <!-- User Initials Circle -->
+                            <Frame CornerRadius="50" 
+                                   HeightRequest="100" 
+                                   WidthRequest="100" 
+                                   BackgroundColor="{StaticResource Gray200}" 
+                                   HorizontalOptions="Center">
+
+                                <Label x:Name="UserInitialsLabel" Text="UN"
+                                       FontSize="32"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"
+                                       TextColor="{StaticResource Black}" />
+                            </Frame>
+
+                            <!-- User Name Label -->
+                            <Label  x:Name="UserNameLabel" Text="User Name"
+                                    FontSize="20"
+                                    HorizontalOptions="Center" />
+                        </VerticalStackLayout>
+
+                        <!-- Display Amount Label -->
+                        <Label x:Name="DisplayAmountLabel"
+                               Text="$0.00"
+                               FontSize="20"
+                               HorizontalOptions="Center"
+                               Margin="0,20,0,20" />
+
+                        <!-- Request Button -->
+                <Button Text="Request"
+                    Style="{StaticResource StandardButton}"
+                    Clicked="OnRequestButtonClicked" />
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>
