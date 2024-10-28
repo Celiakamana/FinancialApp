@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FinancialApp.HomePage">
+
+    <Grid RowDefinitions="auto, *">
+
+        <!-- Top Section with Back Button and Cancel Button -->
+        <Grid Grid.Row="0"
+              HeightRequest="50" 
+              VerticalOptions="Start" 
+              Padding="10"
+              ColumnDefinitions="*,auto"
+              Margin="0,10,0,50">
+
+
+            <!-- Back Button to navigate to the previous page -->
+            <Button Text="⬅" 
+           Clicked="OnBackButtonClicked"
+           HorizontalOptions="Start"
+           Grid.Column="0"
+           Style="{StaticResource BackButtonStyle}" />
+
+            <!-- Cancel Button to navigate back to TransactionsPage -->
+            <Button Text="✕" 
+           Clicked="OnCancelButtonClicked"
+           HorizontalOptions="End"
+           Grid.Column="1"
+           Style="{StaticResource CancelButtonStyle}" />
+            
+        </Grid>
+
+        <!-- Scrollable Main Content Section -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="20" Spacing="15">
+
+                <!-- Search Bar with QR Icon -->
+                <Grid ColumnDefinitions="*,auto" 
+                      HorizontalOptions="FillAndExpand" 
+                      Margin="0,10,0,10" 
+                      ColumnSpacing="15">
+                    
+                    <SearchBar Placeholder="Search Account"
+                               HorizontalOptions="FillAndExpand" />
+                    
+                    <Button Text="My QR" 
+                            Style="{StaticResource StandardButton}" 
+                            Clicked="OnMyQRCodeClicked" 
+                            Grid.Column="1" />
+                </Grid>
+
+                <!-- Balance Display -->
+                <Frame BorderColor="Black" 
+                       CornerRadius="10" 
+                       Padding="20" 
+                       HorizontalOptions="FillAndExpand">
+                    
+                    <VerticalStackLayout>
+                        <Label Text="My Balance"
+                               FontSize="18" 
+                               FontAttributes="Bold" 
+                               HorizontalOptions="Center" />
+                        
+                        <Label x:Name="BalanceLabel" 
+                               Text="$1000.00" 
+                               FontSize="32" 
+                               FontAttributes="Bold" 
+                               HorizontalOptions="Center" />
+                        
+                        <!-- Account & Routing Button -->
+                        <Button 
+                            
+                            Text="Account and Routing" 
+                            Style="{StaticResource StandardButton}" 
+                            Clicked="OnAccountRoutingClicked" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Add and Withdraw Buttons -->
+                <Grid ColumnDefinitions="*,*" 
+                      HorizontalOptions="FillAndExpand" 
+                      ColumnSpacing="15">
+                    
+                    <Button Text="Add"
+                            Style="{StaticResource StandardButton}" 
+                            Clicked="OnAddClicked" 
+                            Grid.Column="0" />
+                    
+                    <Button Text="Withdraw" 
+                            Style="{StaticResource StandardButton}" 
+                            Clicked="OnWithdrawClicked"
+                            Grid.Column="1" />
+                </Grid>
+
+                <!-- Account Settings Buttons -->
+                <Grid ColumnDefinitions="*,*,*" 
+                      HorizontalOptions="FillAndExpand"
+                      RowSpacing="15" 
+                      ColumnSpacing="15"
+                      Margin="0,20,0,20">
+                    
+                    <Button Text="Personal" 
+                            Style="{StaticResource StandardButton}" 
+                            Clicked="OnPersonalClicked" 
+                            Grid.Column="0" />
+                    
+                    <Button Text="Limits" 
+                            Style="{StaticResource StandardButton}"
+                            Clicked="OnLimitsClicked" 
+                            Grid.Column="1" />
+                    
+                    <Button Text="Documents" 
+                            Style="{StaticResource StandardButton}" 
+                            Clicked="OnDocumentsClicked" 
+                            Grid.Column="2" />
+                    
+                    <Button Text="Link Bank" 
+                            Style="{StaticResource StandardButton}" 
+                            Clicked="OnLinkBankClicked" 
+                            Grid.Column="0" Grid.Row="1" />
+                    
+                    <Button Text="Security" 
+                            Style="{StaticResource StandardButton}" 
+                            Clicked="OnSecurityClicked" 
+                            Grid.Column="1" Grid.Row="1" />
+                    
+                    <Button Text="Support" 
+                            Style="{StaticResource StandardButton}" 
+                            Clicked="OnSupportClicked" 
+                            Grid.Column="2" Grid.Row="1" />
+                </Grid>
+
+                <!-- Request Debit Card Button -->
+                <Button Text="Request a Debit Card" 
+                        Style="{StaticResource StandardButton}"
+                        Clicked="OnRequestDebitCardClicked" />
+
+                <!-- Sign Out Button -->
+                <Button Text="Sign Out" 
+                        Style="{StaticResource StandardButton}" 
+                        Clicked="OnSignOutClicked" />
+            
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

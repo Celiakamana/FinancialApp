@@ -51,7 +51,7 @@ namespace FinancialApp
             try
             {
                 //Connection string to the Users database
-                string connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=UserRegistrationDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False";
+                string connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=UserRegistrationDB;Integrated Security=True";
                 //query to add new user to the UsersTable
                 string insertQuery = @"INSERT INTO UsersTable (PhoneNumber, FirstName, LastName, Email, PasswordHash)
                                        VALUES (@PhoneNumber, @FirstName, @LastName, @Email, @PasswordHash); ";

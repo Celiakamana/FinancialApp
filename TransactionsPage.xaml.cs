@@ -39,9 +39,10 @@ namespace FinancialApp
             await DisplayAlert("Pay Bill", "This button's logic will be implemented later.", "OK");
         }
 
-        private void OnHomeIconClicked(object sender, EventArgs e)
+        private async void OnHomeIconClicked(object sender, EventArgs e)
         {
             // Navigate to the home page
+            await Navigation.PushAsync(new HomePage());
         }
 
         private async  void OnTransactionIconClicked(object sender, EventArgs e)

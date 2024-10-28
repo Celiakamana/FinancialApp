@@ -11,8 +11,9 @@ namespace FinancialApp
         private string firstName;
         private string lastName;
         private decimal amount;
+        private string recipientPhoneNumber;
 
-        public SendConfirmationPage(string firstName, string lastName, decimal amount)
+        public SendConfirmationPage(string firstName, string lastName, string recipientPhoneNumber, decimal amount)
         {
             InitializeComponent();
 
@@ -20,12 +21,13 @@ namespace FinancialApp
             this.firstName = firstName;
             this.lastName = lastName;
             this.amount = amount;
-
+            this.recipientPhoneNumber = recipientPhoneNumber;
 
             // Display user initials and amount to send
             UserInitialsLabel.Text = GetInitials(firstName, lastName);
             UserNameLabel.Text = $"{firstName} {lastName}";
             DispalyAmountLabel.Text = $"$ {amount}";
+           
         }
 
         // Get initials from the user's first and last names
@@ -49,9 +51,22 @@ namespace FinancialApp
         // Send button click event handler
         private async void OnSendButtonClicked(object sender, EventArgs e)
         {
-            // Proceed with sending money
-            await DisplayAlert("Success", $"You have successfully sent ${amount} to {firstName} {lastName}", "OK");
-            await Navigation.PushAsync(new TransactionsPage());
+            try
+            {
+                // Update the sender's balance (debit)
+                HomePage.UpdateBalance(amount, MainPage.CurrentUserPhoneNumber, isCredit: false);
+
+                // Update the recipient's balance (credit)
+                HomePage.UpdateBalance(amount, recipientPhoneNumber, isCredit: true);
+
+                // Proceed with sending money
+                await DisplayAlert("Success", $"You have successfully sent ${amount} to {firstName} {lastName}", "OK");
+                await Navigation.PushAsync(new TransactionsPage());
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", $"Failed to complete the transaction: {ex.Message}", "OK");
+            }
         }
     }
 }

@@ -35,19 +35,26 @@ namespace FinancialApp
                 // Retrieve user input
                 string firstName = FirstNameEntry.Text;
                 string lastName = LastNameEntry.Text;
-                string phoneNumber = PhoneNumberEntry.Text;
+                string recipientphoneNumber = PhoneNumberEntry.Text;
 
                 // Check if all fields are filled
-                if (string.IsNullOrEmpty(firstName) || string.IsNullOrEmpty(lastName) || string.IsNullOrEmpty(phoneNumber))
+                if (string.IsNullOrEmpty(firstName) || string.IsNullOrEmpty(lastName) || string.IsNullOrEmpty(recipientphoneNumber))
                 {
                     await DisplayAlert("Error", "All fields must be filled", "OK");
                     return;
                 }
 
-                try
-                {
+            // Validate that the user is not requesting money from themselves
+            if (recipientphoneNumber == MainPage.CurrentUserPhoneNumber)
+            {
+                await DisplayAlert("Error", "You cannot request money from your own account.", "OK");
+                return;
+            }
+
+            try
+            {
                     // Connection string to the UserRegistrationDB database
-                    string connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=UserRegistrationDB;Integrated Security=True;"; 
+                    string connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=UserRegistrationDB;Integrated Security=True"; 
 
                     // SQL query to verify if the provided information matches a user in the database
                     string query = @"SELECT COUNT(1) FROM UsersTable WHERE FirstName = @FirstName AND LastName = @LastName AND PhoneNumber = @PhoneNumber";
@@ -61,7 +68,7 @@ namespace FinancialApp
                             // Prevent SQL injection
                             cmd.Parameters.AddWithValue("@FirstName", firstName);
                             cmd.Parameters.AddWithValue("@LastName", lastName);
-                            cmd.Parameters.AddWithValue("@PhoneNumber", phoneNumber);
+                            cmd.Parameters.AddWithValue("@PhoneNumber", recipientphoneNumber);
 
                             // Execute the query
                             int count = Convert.ToInt32(await cmd.ExecuteScalarAsync());

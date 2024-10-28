@@ -4,11 +4,12 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Data.SqlClient;
 
+
 namespace FinancialApp
 {
     public partial class MainPage : ContentPage
     {
-        
+        public static string CurrentUserPhoneNumber { get; set; } = string.Empty; // Static property to store the logged-in user's phone number for the homepqge
 
         public MainPage()
         {
@@ -68,6 +69,8 @@ namespace FinancialApp
                         // If a match is found, redirect to TransactionsPage.
                         if (count == 1)
                         {
+                            // After successful login dynamically set the number for the user validation and proceed to the next page
+                            MainPage.CurrentUserPhoneNumber = phoneNumber; // Set the logged-in user's phone number
                             await Navigation.PushAsync(new TransactionsPage());
                         }
                         else
@@ -83,6 +86,7 @@ namespace FinancialApp
                 // Handle any errors that occur during login (e.g., database interaction).
                 await DisplayAlert("Error", $"Database error: {ex.Message}", "OK");
             }
+
         }
 
         // Method to hash the password using SHA256 (same hashing method used during registration).
@@ -100,6 +104,9 @@ namespace FinancialApp
                 return builder.ToString();
             }
         }
+
+
+        
     }
 }
 
