@@ -37,7 +37,7 @@
 
             <!-- Register Button -->
             <Button Text="Register an Account"
-                    Style="{StaticResource StandardButton}"
+                    Style="{StaticResource BiggerButton}"
                     Clicked="OnRegistrationButtonClicked" />
         </VerticalStackLayout>
     </ScrollView>

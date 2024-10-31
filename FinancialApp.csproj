@@ -67,6 +67,9 @@
 	  <Compile Update="HomePage.xaml.cs">
 	    <DependentUpon>HomePage.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="PersonalInfoPage.xaml.cs">
+	    <DependentUpon>PersonalInfoPage.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="RequestConfirmationPage.xaml.cs">
 	    <DependentUpon>RequestConfirmationPage.xaml</DependentUpon>
 	  </Compile>
@@ -95,6 +98,9 @@
 
 	<ItemGroup>
 	  <MauiXaml Update="HomePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="PersonalInfoPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="RequestConfirmationPage.xaml">

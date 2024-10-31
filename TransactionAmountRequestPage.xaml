@@ -37,11 +37,23 @@
             <VerticalStackLayout  Padding="20" Spacing="20">
 
                 <!-- Entry field for entering the amount to be transacted -->
-                <Entry x:Name="AmountEntry"
-                   Placeholder="Enter Amount: $"
-                   Keyboard="Numeric"
-                   HorizontalOptions="FillAndExpand"
-                   Margin="0,10,0,100"/>
+               
+                <Grid ColumnDefinitions="auto,*" HorizontalOptions="FillAndExpand">
+                    <Label Text="$"
+                 FontSize="45"
+                 VerticalOptions="Start"
+                 Grid.Column="0"
+                 Margin="0,0,5,0" />
+
+                    <Entry x:Name="AmountEntry"
+                 Placeholder="Enter Amount:"
+                 Keyboard="Numeric"
+                 HorizontalOptions="FillAndExpand"
+                 Grid.Column="1"
+                 Margin="0,10,0,100"/>
+
+                </Grid>
+
 
                 <!-- Button to select "By Phone" transaction option -->
                 <Button Text="By Phone"
@@ -51,10 +63,15 @@
 
                 <!-- Button to select "By QR" transaction option -->
                 <Button Text="By QR"
-                    Style="{StaticResource StandardButton}"
-                    Clicked="OnByQRButtonClicked"
-                     Margin="0,10,0,100"/>
+                        Style="{StaticResource StandardButton}"
+                        Clicked="OnByQRButtonClicked"/>
 
+                <!-- Button to select "USSD" transaction option since this is just and protype, no real USSD functionality.-->
+                <Button Text="By USSD"
+                        Style="{StaticResource StandardButton}"
+                        Clicked="OnByUSSDButtonClicked"
+                        Margin="0,0,0,100"/>
+                
             </VerticalStackLayout>
         </ScrollView>
     </Grid>

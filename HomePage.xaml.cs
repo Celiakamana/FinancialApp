@@ -11,6 +11,44 @@ namespace FinancialApp
             InitializeComponent();
         }
 
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            FetchAndDisplayBalance();
+        }
+
+        // Fetch the balance from the database and update the BalanceLabel
+        private void FetchAndDisplayBalance()
+        {
+            try
+            {
+                // Connection string to the UserRegistrationDB database
+                string connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=UserRegistrationDB;Integrated Security=True";
+
+                // Query to get the balance of the current user
+                string query = @"SELECT Balance FROM UsersTable WHERE PhoneNumber = @PhoneNumber";
+
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@PhoneNumber", MainPage.CurrentUserPhoneNumber);
+
+                        var balance = cmd.ExecuteScalar();
+                        if (balance != null)
+                        {
+                            BalanceLabel.Text = $"${Convert.ToDecimal(balance):F2}";
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching balance: {ex.Message}");
+            }
+        }
+
         // Back Button Click Event
         private async void OnBackButtonClicked(object sender, EventArgs e)
         {
@@ -50,7 +88,7 @@ namespace FinancialApp
         // Personal Click Event
         private async void OnPersonalClicked(object sender, EventArgs e)
         {
-            await DisplayAlert("Personal", "This button's logic will be implemented later.", "OK");
+            await Navigation.PushAsync(new PersonalInfoPage());
         }
 
         // Limits Click Event
@@ -95,41 +133,6 @@ namespace FinancialApp
             // Navigate back to MainPage (Login Page)
             await Navigation.PushAsync(new MainPage());
         }
-
-        // Update Balance After Transactions
-       public static void UpdateBalance(decimal amount, string PhoneNumber, bool isCredit)
-       {
-                try
-                {
-                    // Connection string to the UserRegistrationDB database
-                    string connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=UserRegistrationDB;Integrated Security=True";
-
-                    // Update query to increment or decrement the user's balance
-                    
-                string updateQuery = @"UPDATE UsersTable SET Balance = Balance + @Amount WHERE PhoneNumber = @PhoneNumber";
-                    if (!isCredit)
-                    {
-                        updateQuery = @"UPDATE UsersTable SET Balance = Balance - @Amount WHERE PhoneNumber = @PhoneNumber";
-                    }
-
-                    using (SqlConnection conn = new SqlConnection(connectionString))
-                    {
-                        conn.Open();
-                        using (SqlCommand cmd = new SqlCommand(updateQuery, conn))
-                        {
-                            cmd.Parameters.AddWithValue("@PhoneNumber", PhoneNumber);
-                            cmd.Parameters.AddWithValue("@Amount", amount);
-
-                            cmd.ExecuteNonQuery();
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    // Log error 
-                    Console.WriteLine($"Error updating balance: {ex.Message}");
-                }
-       }
-
+       
     }
 }

@@ -26,7 +26,7 @@ namespace FinancialApp
             // Display user initials and amount to send
             UserInitialsLabel.Text = GetInitials(firstName, lastName);
             UserNameLabel.Text = $"{firstName} {lastName}";
-            DispalyAmountLabel.Text = $"$ {amount}";
+            DispalyAmountLabel.Text = $"$ {amount:F2}";
            
         }
 
@@ -54,10 +54,10 @@ namespace FinancialApp
             try
             {
                 // Update the sender's balance (debit)
-                HomePage.UpdateBalance(amount, MainPage.CurrentUserPhoneNumber, isCredit: false);
+                UpdateBalance(amount, MainPage.CurrentUserPhoneNumber, isCredit: false);
 
                 // Update the recipient's balance (credit)
-                HomePage.UpdateBalance(amount, recipientPhoneNumber, isCredit: true);
+                UpdateBalance(amount, recipientPhoneNumber, isCredit: true);
 
                 // Proceed with sending money
                 await DisplayAlert("Success", $"You have successfully sent ${amount} to {firstName} {lastName}", "OK");
@@ -66,6 +66,40 @@ namespace FinancialApp
             catch (Exception ex)
             {
                 await DisplayAlert("Error", $"Failed to complete the transaction: {ex.Message}", "OK");
+            }
+        }
+
+        //To update balance after transction
+        public static void UpdateBalance(decimal amount, string PhoneNumber, bool isCredit)
+        {
+            try
+            {
+                // Connection string to the UserRegistrationDB database
+                string connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=UserRegistrationDB;Integrated Security=True";
+
+                // Update query to increment or decrement the user's balance
+                string updateQuery = @"UPDATE UsersTable SET Balance = Balance + @Amount WHERE PhoneNumber = @PhoneNumber";
+                if (!isCredit)
+                {
+                    updateQuery = @"UPDATE UsersTable SET Balance = Balance - @Amount WHERE PhoneNumber = @PhoneNumber";
+                }
+
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    using (SqlCommand cmd = new SqlCommand(updateQuery, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@PhoneNumber", PhoneNumber);
+                        cmd.Parameters.AddWithValue("@Amount", amount);
+
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log error 
+                Console.WriteLine($"Error updating balance: {ex.Message}");
             }
         }
     }
