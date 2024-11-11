@@ -1,4 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
+using ZXing.Net.Maui;
+using ZXing.Net.Maui.Controls;
+
 
 namespace FinancialApp
 {
@@ -9,6 +12,7 @@ namespace FinancialApp
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseBarcodeReader()// the barcode reader
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");

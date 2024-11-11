@@ -10,6 +10,9 @@ namespace FinancialApp
 {
     public partial class RegistrationPage : ContentPage
     {
+        //for storing user info for other pages
+        public static string CurrentUserLastname { get; set; } = string.Empty;
+        public static string CurrentUserFirstname { get; set; } = string.Empty;
         public RegistrationPage()
         {
             InitializeComponent();
@@ -76,6 +79,11 @@ namespace FinancialApp
                         if (rowsAffected > 0)
                         {
                             // Success
+
+                            //first dynamically set user info to be used later
+                            RegistrationPage.CurrentUserFirstname = firstName;
+                            RegistrationPage.CurrentUserLastname = lastName;
+
                             await DisplayAlert("Success", "Registration Successful!", "OK");
                             await Navigation.PushAsync(new MainPage());
                         }

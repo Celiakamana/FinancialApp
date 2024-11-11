@@ -95,7 +95,7 @@ namespace FinancialApp
             }
         }
 
-        // Prevent user from sending or requesting to their own account
+        // Found easier way: Prevent user from sending or requesting to their own account
         public bool ValidateRecipient(string recipientPhoneNumber)
         {
             string currentUserPhoneNumber = "UserPhoneNumberHere"; // will get number dynamically and set to the current user's phone number
