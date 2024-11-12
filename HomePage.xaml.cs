@@ -23,7 +23,7 @@ namespace FinancialApp
             try
             {
                 // Connection string to the UserRegistrationDB database
-                string connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=UserRegistrationDB;Integrated Security=True";
+                string connectionString = "Data Source=personal\\SQLEXPRESS;Initial Catalog=UserRegistrationDB;Integrated Security=True;Trust Server Certificate=True";
 
                 // Query to get the balance of the current user
                 string query = @"SELECT Balance FROM UsersTable WHERE PhoneNumber = @PhoneNumber";

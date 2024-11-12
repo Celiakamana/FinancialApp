@@ -75,7 +75,7 @@ namespace FinancialApp
             try
             {
                 // Connection string to the UserRegistrationDB database
-                string connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=UserRegistrationDB;Integrated Security=True";
+                string connectionString = "Data Source=personal\\SQLEXPRESS;Initial Catalog=UserRegistrationDB;Integrated Security=True;Trust Server Certificate=True";
 
                 // Update query to increment or decrement the user's balance
                 string updateQuery = @"UPDATE UsersTable SET Balance = Balance + @Amount WHERE PhoneNumber = @PhoneNumber";

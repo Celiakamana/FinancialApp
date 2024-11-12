@@ -10,7 +10,8 @@ namespace FinancialApp
     public partial class MainPage : ContentPage
     {
         public static string CurrentUserPhoneNumber { get; set; } = string.Empty; // Static property to store the logged-in user's phone number for the homepqge
-
+        // Static property to store the logged-in user's ID for other pages
+        public static int CurrentUserID { get; set; }
         public MainPage()
         {
             InitializeComponent();
@@ -49,9 +50,9 @@ namespace FinancialApp
             try
             {
                 // Connection string to the database.
-                string connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=UserRegistrationDB;Integrated Security=True";
+                string connectionString = "Data Source=personal\\SQLEXPRESS;Initial Catalog=UserRegistrationDB;Integrated Security=True;Trust Server Certificate=True";
                 // Query to check if the phone number and hashed password match an existing record.
-                string query = @"SELECT COUNT(1) FROM UsersTable WHERE PhoneNumber = @PhoneNumber AND PasswordHash = @PasswordHash";
+                string query = @"SELECT UserID FROM UsersTable WHERE PhoneNumber = @PhoneNumber AND PasswordHash = @PasswordHash";
 
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
@@ -63,14 +64,16 @@ namespace FinancialApp
                         cmd.Parameters.AddWithValue("@PhoneNumber", phoneNumber);
                         cmd.Parameters.AddWithValue("@PasswordHash", hashedPassword);
 
-                        // Execute the query.
-                        int count = Convert.ToInt32(await cmd.ExecuteScalarAsync());
+                        // Execute the query and get the UserID.
+                        var userIdObj = await cmd.ExecuteScalarAsync();
 
-                        // If a match is found, redirect to TransactionsPage.
-                        if (count == 1)
+                        if (userIdObj != null && int.TryParse(userIdObj.ToString(), out int userId))
                         {
-                            // After successful login dynamically set the number for the user validation and proceed to the next page
-                            MainPage.CurrentUserPhoneNumber = phoneNumber; // Set the logged-in user's phone number
+                            // Successful login: set the static properties for UserID and PhoneNumber.
+                            MainPage.CurrentUserPhoneNumber = phoneNumber;
+                            MainPage.CurrentUserID = userId;
+
+                            // Proceed to TransactionsPage.
                             await Navigation.PushAsync(new TransactionsPage());
                         }
                         else

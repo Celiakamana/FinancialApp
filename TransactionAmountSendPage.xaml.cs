@@ -3,11 +3,14 @@ using Microsoft.Maui.Controls;
 using ZXing.Net.Maui;
 using ZXing.Net.Maui.Controls;
 using System;
+using System.Linq;
 
 namespace FinancialApp
 {
     public partial class TransactionAmountSendPage : ContentPage
     {
+        private bool isScanned = false; // Flag to track if QR code is already scanned
+
         public TransactionAmountSendPage()
         {
             InitializeComponent();
@@ -34,8 +37,6 @@ namespace FinancialApp
             // Check if an amount has been entered and that it is greater than $1
             if (decimal.TryParse(AmountEntry.Text, out decimal amount) && amount > 1)
             {
-               
-
                 // Navigate to the SendByPhonePage when "By Phone" is selected and amount greater than a dollar is entered
                 await Navigation.PushAsync(new SendByPhonePage(amount));
             }
@@ -76,7 +77,7 @@ namespace FinancialApp
                                 HeightRequest = 500,
                                 WidthRequest = 500,
                                 AutomationId = "QRScanner",
-                                Options = new BarcodeReaderOptions //property name
+                                Options = new BarcodeReaderOptions
                                 {
                                     Formats = BarcodeFormat.QrCode
                                 }
@@ -90,64 +91,92 @@ namespace FinancialApp
                 // Subscribe to the BarcodesDetected event
                 barcodeReaderView.BarcodesDetected += async (s, e) =>
                 {
-                    foreach (var barcode in e.Results)
+                    if (isScanned) return; // If already scanned, exit
+
+                    // Ensure the results contain at least one item
+                    var results = e?.Results?.ToList();
+                    if (results == null || results.Count == 0) return;
+
+                    // Set flag before processing to prevent multiple scans
+                    isScanned = true;
+
+                    await MainThread.InvokeOnMainThreadAsync(async () =>
                     {
-                        await MainThread.InvokeOnMainThreadAsync(async () =>
+                        try
                         {
-                            string[] userInfo = barcode.Value.Split(',');
-                            if (userInfo.Length == 3)
+                            // Extract user info from QR code
+                            string[] qrInfo = results[0].Value.Split(',');
+
+                            if (qrInfo.Length == 2)
                             {
-                                string firstName = userInfo[0];
-                                string lastName = userInfo[1];
-                                string recipientPhoneNumber = userInfo[2];
-
-                                // Validate that the user is not sending money to themselves
-                                if (recipientPhoneNumber == MainPage.CurrentUserPhoneNumber)
+                                // Extract userID and recipientPhoneNumber
+                                if (int.TryParse(qrInfo[0], out int userID) && !string.IsNullOrEmpty(qrInfo[1]))
                                 {
-                                    await DisplayAlert("Error", "You cannot send money to your own account.", "OK");
-                                    return;
-                                }
+                                    string recipientPhoneNumber = qrInfo[1];
 
-                                // Verify if provided information matches a user in the database
-                                try
-                                {
-                                    string connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=UserRegistrationDB;Integrated Security=True";
+                                    // Validate that the user is not sending money to themselves
+                                    if (recipientPhoneNumber == MainPage.CurrentUserPhoneNumber)
+                                    {
+                                        await DisplayAlert("Error", "You cannot send money to your own account.", "OK");
+                                        isScanned = false; // Allow rescan in case of error
+                                        return;
+                                    }
 
-                                    string query = @"SELECT COUNT(1) FROM UsersTable WHERE FirstName = @FirstName AND LastName = @LastName AND PhoneNumber = @PhoneNumber";
+                                    // Query the database to fetch additional details of the recipient (firstName, lastName)
+                                    string connectionString = "Data Source=personal\\SQLEXPRESS;Initial Catalog=UserRegistrationDB;Integrated Security=True;Trust Server Certificate=True";
+                                    string query = @"SELECT FirstName, LastName FROM UsersTable WHERE UserID = @UserID AND PhoneNumber = @PhoneNumber";
 
                                     using (SqlConnection conn = new SqlConnection(connectionString))
                                     {
                                         await conn.OpenAsync();
-
                                         using (SqlCommand cmd = new SqlCommand(query, conn))
                                         {
-                                            cmd.Parameters.AddWithValue("@FirstName", firstName);
-                                            cmd.Parameters.AddWithValue("@LastName", lastName);
+                                            // Add parameters to SQL command
+                                            cmd.Parameters.AddWithValue("@UserID", userID);
                                             cmd.Parameters.AddWithValue("@PhoneNumber", recipientPhoneNumber);
 
-                                            int count = Convert.ToInt32(await cmd.ExecuteScalarAsync());
+                                            using (var reader = await cmd.ExecuteReaderAsync())
+                                            {
+                                                if (reader.HasRows && await reader.ReadAsync())
+                                                {
+                                                    string firstName = reader.GetString(reader.GetOrdinal("FirstName"));
+                                                    string lastName = reader.GetString(reader.GetOrdinal("LastName"));
 
-                                            if (count == 1)
-                                            {
-                                                await Navigation.PushAsync(new SendConfirmationPage(firstName, lastName, recipientPhoneNumber, amount));
-                                            }
-                                            else
-                                            {
-                                                await DisplayAlert("Error", "User not found", "OK");
+                                                    // Unsubscribe from the event to prevent further scans
+                                                    barcodeReaderView.BarcodesDetected -= null;
+
+                                                    // Proceed with transaction
+                                                    await Navigation.PushAsync(new SendConfirmationPage(firstName, lastName, recipientPhoneNumber, amount));
+                                                }
+                                                else
+                                                {
+                                                    await DisplayAlert("Error", "User not found", "OK");
+                                                    isScanned = false; // Allow rescan in case of error
+                                                }
                                             }
                                         }
                                     }
                                 }
-                                catch (Exception ex)
+                                else
                                 {
-                                    await DisplayAlert("Error", $"Database error: {ex.Message}", "OK");
+                                    await DisplayAlert("Error", "Invalid QR code format.", "OK");
+                                    isScanned = false; // Allow rescan in case of error
                                 }
                             }
-                        });
-                    }
+                            else
+                            {
+                                await DisplayAlert("Error", "Invalid QR code format.", "OK");
+                                isScanned = false; // Allow rescan in case of error
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            await DisplayAlert("Error", $"Database error: {ex.Message}", "OK");
+                            isScanned = false; // Allow rescan in case of error
+                        }
+                    });
                 };
 
-                // Navigate to the scanner page
                 await Navigation.PushAsync(scannerPage);
             }
             else
@@ -156,23 +185,30 @@ namespace FinancialApp
             }
         }
 
-        //Method to handle "By USSD" button click event
+        // Method to handle "By USSD" button click event
         private async void OnByUSSDButtonClicked(object sender, EventArgs e)
         {
             // Check if an amount has been entered and that it is greater than $1
             if (decimal.TryParse(AmountEntry.Text, out decimal amount) && amount > 1)
             {
-                    string ussdCode = await DisplayPromptAsync("Enter USSD Code", "Format: *12*firstName*lastName*phoneNumber#");
+                string ussdCode = await DisplayPromptAsync("Enter USSD Code", "Format: *12*firstName*lastName*phoneNumber#");
 
-                    if (ValidateUSSDCode(ussdCode))
+                // If user cancels the prompt, `ussdCode` will be null
+                if (string.IsNullOrEmpty(ussdCode))
+                {
+                    // User cancelled the prompt, so simply return
+                    return;
+                }
+
+                if (ValidateUSSDCode(ussdCode))
+                {
+                    // Extract user info from USSD code
+                    var parts = ussdCode.Split('*');
+                    if (parts.Length == 5 && parts[0] == "" && parts[1] == "12" && parts[^1].EndsWith("#"))
                     {
-                        // Extract user info from USSD code
-                        var parts = ussdCode.Split('*');
-                        if (parts.Length == 5 && parts[0] == "" && parts[1] == "12" && parts[^1].EndsWith("#"))
-                        {
-                            string firstName = parts[2];
-                            string lastName = parts[3];
-                            string recipientphoneNumber = parts[4].TrimEnd('#');
+                        string firstName = parts[2];
+                        string lastName = parts[3];
+                        string recipientphoneNumber = parts[4].TrimEnd('#');
 
                         // Validate that the user is not sending money to themselves
                         if (recipientphoneNumber == MainPage.CurrentUserPhoneNumber)
@@ -181,55 +217,53 @@ namespace FinancialApp
                             return;
                         }
 
-                       // Verify if provided information matches a user in the database
-                             try
-                             {
-                                // Connection string to the UserRegistrationDB database
-                                string connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=UserRegistrationDB;Integrated Security=True";
+                        // Verify if provided information matches a user in the database
+                        try
+                        {
+                            // Connection string to the UserRegistrationDB database
+                            string connectionString = "Data Source=personal\\SQLEXPRESS;Initial Catalog=UserRegistrationDB;Integrated Security=True;Trust Server Certificate=True";
 
-                                 // SQL query to verify if the provided information matches a user in the database
-                                   string query = @"SELECT COUNT(1) FROM UsersTable WHERE FirstName = @FirstName AND LastName = @LastName AND PhoneNumber = @PhoneNumber";
+                            // SQL query to verify if the provided information matches a user in the database
+                            string query = @"SELECT COUNT(1) FROM UsersTable WHERE FirstName = @FirstName AND LastName = @LastName AND PhoneNumber = @PhoneNumber";
 
-                                using (SqlConnection conn = new SqlConnection(connectionString))
-                                 {
-                                       await conn.OpenAsync();
+                            using (SqlConnection conn = new SqlConnection(connectionString))
+                            {
+                                await conn.OpenAsync();
 
-                                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                                using (SqlCommand cmd = new SqlCommand(query, conn))
+                                {
+                                    // Prevent SQL injection
+                                    cmd.Parameters.AddWithValue("@FirstName", firstName);
+                                    cmd.Parameters.AddWithValue("@LastName", lastName);
+                                    cmd.Parameters.AddWithValue("@PhoneNumber", recipientphoneNumber);
+
+                                    // Execute the query
+                                    int count = Convert.ToInt32(await cmd.ExecuteScalarAsync());
+
+                                    // If a match is found, navigate to SendConfirmationPage
+                                    if (count == 1)
                                     {
-                                       // Prevent SQL injection
-                                       cmd.Parameters.AddWithValue("@FirstName", firstName);
-                                       cmd.Parameters.AddWithValue("@LastName", lastName);
-                                       cmd.Parameters.AddWithValue("@PhoneNumber", recipientphoneNumber);
-
-                                       // Execute the query
-                                      int count = Convert.ToInt32(await cmd.ExecuteScalarAsync());
-
-                                      // If a match is found, navigate to SendConfirmationPage
-                                      if (count == 1)
-                                      {
                                         await Navigation.PushAsync(new SendConfirmationPage(firstName, lastName, recipientphoneNumber, amount));
-                                      }
-                                      else
-                                      {
+                                    }
+                                    else
+                                    {
                                         // If no match is found, show an error message
                                         await DisplayAlert("Error", "User not found", "OK");
-                                      }
                                     }
                                 }
-                             }
-                             catch (Exception ex)
-                             {
-                                  // Handle any errors that occur during database interaction
-                                  await DisplayAlert("Error", $"Database error: {ex.Message}", "OK");
-                             }
-
-
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            // Handle any errors that occur during database interaction
+                            await DisplayAlert("Error", $"Database error: {ex.Message}", "OK");
                         }
                     }
-                    else
-                    {
-                        await DisplayAlert("Error", "Invalid USSD code format", "OK");
-                    }
+                }
+                else
+                {
+                    await DisplayAlert("Error", "Invalid USSD code format", "OK");
+                }
             }
             else
             {
@@ -238,16 +272,16 @@ namespace FinancialApp
             }
         }
 
-        //valid ussd
+        // Validate USSD code
         private bool ValidateUSSDCode(string code)
         {
-            return code.StartsWith("*12*") && code.EndsWith("#");
+            return !string.IsNullOrEmpty(code) && code.StartsWith("*12*") && code.EndsWith("#");
         }
 
         // Event handler to format the AmountEntry with two decimal places
         private void OnAmountEntryTextChanged(object? sender, TextChangedEventArgs e)
         {
-            //just digits
+            // Just digits
             if (decimal.TryParse(AmountEntry.Text, out decimal amount))
             {
                 string currentText = e.NewTextValue;
@@ -273,9 +307,6 @@ namespace FinancialApp
 
             // Re-add the event handler
             AmountEntry.TextChanged += OnAmountEntryTextChanged;
-
-
-            
         }
     }
 }

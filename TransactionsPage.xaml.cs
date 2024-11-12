@@ -1,4 +1,5 @@
-﻿using Microsoft.Maui.Controls;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.Maui.Controls;
 using Microsoft.Maui.Graphics;
 using QRCoder;
 using System.IO;
@@ -22,13 +23,14 @@ namespace FinancialApp
 
         private async void OnQRCodeClicked(object sender, EventArgs e)
         {
-            // Handle MYQR code
-            // gather data
+            // Gather the necessary data to include in the QR Code
             string firstName = RegistrationPage.CurrentUserFirstname;
             string lastName = RegistrationPage.CurrentUserLastname;
             string recipientPhoneNumber = MainPage.CurrentUserPhoneNumber;
-           //create data string
-            string qrData = $"{firstName},{lastName},{recipientPhoneNumber}";
+            int userID = MainPage.CurrentUserID;
+
+            // Create data string including UserID and PhoneNumber
+            string qrData = $"{userID},{recipientPhoneNumber}";
 
             // Generate QR code using QRCoder with PngByteQRCode
             using (var qrGenerator = new QRCodeGenerator())
@@ -42,48 +44,66 @@ namespace FinancialApp
                     // Convert the byte array to a MemoryStream
                     using (var stream = new MemoryStream(qrCodeAsPngByteArr))
                     {
-                        // Convert the stream to an ImageSource for .NET MAUI
                         var qrCodeImageSource = ImageSource.FromStream(() => stream);
+
+                        // Save QR code data to the UsersTable
+                        string connectionString = "Data Source=personal\\SQLEXPRESS;Initial Catalog=UserRegistrationDB;Integrated Security=True;Trust Server Certificate=True";
+                        string updateQuery = @"UPDATE UsersTable SET QRCodeData = @QRCodeData WHERE UserID = @UserID";
+
+                        try
+                        {
+                            using (SqlConnection conn = new SqlConnection(connectionString))
+                            {
+                                await conn.OpenAsync();
+                                using (SqlCommand cmd = new SqlCommand(updateQuery, conn))
+                                {
+                                    cmd.Parameters.AddWithValue("@QRCodeData", qrData);
+                                    cmd.Parameters.AddWithValue("@UserID", userID);
+                                    await cmd.ExecuteNonQueryAsync();
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            await DisplayAlert("Error", $"Failed to save QR code: {ex.Message}", "OK");
+                        }
 
                         // Display the QR code using an Image control
                         var qrCodePage = new ContentPage
                         {
-                           Content = new StackLayout
-                           {
-                               Children =
-                               {
-                                  new Button
-                                  {
-                                      Text = "✕",
-                                      HorizontalOptions = LayoutOptions.End,
-                                      VerticalOptions = LayoutOptions.Center,
-                                      BackgroundColor = Colors.Purple,
-                                      TextColor = Colors.White,
-                                      HeightRequest = 50,
-                                      WidthRequest = 50,
-                                      CornerRadius = 25,
-                                      FontSize = 20,
-                                      Command = new Command(async () => await Navigation.PopAsync())
-
-                                  },
-                                  new Image
-                                  {
-                                    Source = qrCodeImageSource,
-                                    HorizontalOptions = LayoutOptions.Center,
-                                    VerticalOptions = LayoutOptions.Start,
-                                    HeightRequest = 300,
-                                    WidthRequest = 300
-                                  }
-                                  
-                               }
-                           }
+                            Content = new StackLayout
+                            {
+                                Children =
+                                {
+                                    new Button
+                                    {
+                                        Text = "✕",
+                                        HorizontalOptions = LayoutOptions.End,
+                                        VerticalOptions = LayoutOptions.Center,
+                                        BackgroundColor = Colors.Purple,
+                                        TextColor = Colors.White,
+                                        HeightRequest = 50,
+                                        WidthRequest = 50,
+                                        CornerRadius = 25,
+                                        FontSize = 20,
+                                        Command = new Command(async () => await Navigation.PopAsync())
+                                    },
+                                    new Image
+                                    {
+                                        Source = qrCodeImageSource,
+                                        HorizontalOptions = LayoutOptions.Center,
+                                        VerticalOptions = LayoutOptions.Start,
+                                        HeightRequest = 300,
+                                        WidthRequest = 300
+                                    }
+                                }
+                            }
                         };
 
                         await Navigation.PushAsync(qrCodePage);
                     }
                 }
             }
-
         }
 
         private async void OnSendButtonClicked(object sender, EventArgs e)

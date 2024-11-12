@@ -54,7 +54,7 @@ namespace FinancialApp
             try
             {
                     // Connection string to the UserRegistrationDB database
-                    string connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=UserRegistrationDB;Integrated Security=True"; 
+                    string connectionString = "Data Source=personal\\SQLEXPRESS;Initial Catalog=UserRegistrationDB;Integrated Security=True;Trust Server Certificate=True"; 
 
                     // SQL query to verify if the provided information matches a user in the database
                     string query = @"SELECT COUNT(1) FROM UsersTable WHERE FirstName = @FirstName AND LastName = @LastName AND PhoneNumber = @PhoneNumber";
