@@ -20,11 +20,12 @@ namespace FinancialApp
             this.firstName = firstName;
             this.lastName = lastName;
             this.amount = amount;
+            
 
             // Display user initials and amount to send
             UserInitialsLabel.Text = GetInitials(firstName, lastName);
             UserNameLabel.Text = $"{firstName} {lastName}";
-            DisplayAmountLabel.Text = $"$ {amount}";
+            DisplayAmountLabel.Text = $"$ {amount:F2}";
         }
 
         // Get initials from the user's first and last names

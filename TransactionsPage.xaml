@@ -12,10 +12,10 @@
               Padding="10"
               Margin="0,10,0,50">
 
-            <Label
-                Text="Welcome Back,"
-                FontSize="Large"
-                           />
+            <Label x:Name="WelcomeLabel"
+                   Text="Welcome Back,"
+                   FontSize="Large"
+                   HorizontalOptions="Start"/>
         </Grid>
 
         <!-- Scrollable Main Content Section -->

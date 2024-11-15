@@ -13,6 +13,7 @@ namespace FinancialApp
         public TransactionsPage()
         {
             InitializeComponent();
+            LoadUserWelcomeMessage();
         }
 
         private async void OnBackButtonClicked(object sender, EventArgs e)
@@ -24,8 +25,7 @@ namespace FinancialApp
         private async void OnQRCodeClicked(object sender, EventArgs e)
         {
             // Gather the necessary data to include in the QR Code
-            string firstName = RegistrationPage.CurrentUserFirstname;
-            string lastName = RegistrationPage.CurrentUserLastname;
+          
             string recipientPhoneNumber = MainPage.CurrentUserPhoneNumber;
             int userID = MainPage.CurrentUserID;
 
@@ -141,5 +141,52 @@ namespace FinancialApp
             // Handle Notifications icon click
             await DisplayAlert("Recent Notifications List", "This button's logic will be implemented later.", "OK");
         }
+
+        //To load the name wih the welcome  label
+         private async void LoadUserWelcomeMessage()
+        {
+            string connectionString = "Data Source=personal\\SQLEXPRESS;Initial Catalog=UserRegistrationDB;Integrated Security=True;Trust Server Certificate=True";
+            string query = @"SELECT FirstName FROM UsersTable WHERE UserID = @UserID";
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    await conn.OpenAsync();
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@UserID", MainPage.CurrentUserID);
+
+                        var firstNameObj = await cmd.ExecuteScalarAsync();
+
+                        if (firstNameObj != null)
+                        {
+                            string firstName = firstNameObj?.ToString() ?? string.Empty;
+
+                            if (!string.IsNullOrEmpty(firstName))
+                            {
+                                // Capitalize the first letter of the first name
+                                string firstNameStr = char.ToUpper(firstName[0]) + firstName.Substring(1).ToLower();
+                                WelcomeLabel.Text = $"Welcome Back {firstNameStr},";
+                            }
+                            else
+                            {
+                                WelcomeLabel.Text = "Welcome Back,";
+                            }
+                        }
+                        else
+                        {
+                            WelcomeLabel.Text = "Welcome Back,";
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", $"Failed to load user data: {ex.Message}", "OK");
+            }
+         }
+
     }
 }
