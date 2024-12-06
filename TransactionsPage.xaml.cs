@@ -47,7 +47,7 @@ namespace FinancialApp
                         var qrCodeImageSource = ImageSource.FromStream(() => stream);
 
                         // Save QR code data to the UsersTable
-                        string connectionString = "Data Source=personal\\SQLEXPRESS;Initial Catalog=UserRegistrationDB;Integrated Security=True;Trust Server Certificate=True";
+                        string connectionString = DatabaseConfig.ConnectionString;
                         string updateQuery = @"UPDATE UsersTable SET QRCodeData = @QRCodeData WHERE UserID = @UserID";
 
                         try
@@ -145,9 +145,9 @@ namespace FinancialApp
         //To load the name wih the welcome  label
          private async void LoadUserWelcomeMessage()
         {
-            string connectionString = "Data Source=personal\\SQLEXPRESS;Initial Catalog=UserRegistrationDB;Integrated Security=True;Trust Server Certificate=True";
+            string connectionString = DatabaseConfig.ConnectionString;
             string query = @"SELECT FirstName FROM UsersTable WHERE UserID = @UserID";
-
+            
             try
             {
                 using (SqlConnection conn = new SqlConnection(connectionString))

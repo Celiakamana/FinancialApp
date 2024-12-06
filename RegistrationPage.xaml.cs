@@ -54,7 +54,8 @@ namespace FinancialApp
             try
             {
                 //Connection string to the Users database
-                string connectionString = "Data Source=personal\\SQLEXPRESS;Initial Catalog=UserRegistrationDB;Integrated Security=True;Trust Server Certificate=True";
+                string connectionString = DatabaseConfig.ConnectionString;
+
                 //query to add new user to the UsersTable
                 string insertQuery = @"INSERT INTO UsersTable (PhoneNumber, FirstName, LastName, Email, PasswordHash)
                                        VALUES (@PhoneNumber, @FirstName, @LastName, @Email, @PasswordHash); ";

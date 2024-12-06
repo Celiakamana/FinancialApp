@@ -122,7 +122,7 @@ namespace FinancialApp
                                     }
 
                                     // Query the database to fetch additional details of the recipient (firstName, lastName)
-                                    string connectionString = "Data Source=personal\\SQLEXPRESS;Initial Catalog=UserRegistrationDB;Integrated Security=True;Trust Server Certificate=True";
+                                    string connectionString = DatabaseConfig.ConnectionString;
                                     string query = @"SELECT FirstName, LastName FROM UsersTable WHERE UserID = @UserID AND PhoneNumber = @PhoneNumber";
 
                                     using (SqlConnection conn = new SqlConnection(connectionString))
@@ -220,7 +220,7 @@ namespace FinancialApp
                         try
                         {
                             // Connection string to the UserRegistrationDB database
-                            string connectionString = "Data Source=personal\\SQLEXPRESS;Initial Catalog=UserRegistrationDB;Integrated Security=True;Trust Server Certificate=True";
+                            string connectionString = DatabaseConfig.ConnectionString;
 
                             // SQL query to verify if the provided information matches a user in the database
                             string query = @"SELECT COUNT(1) FROM UsersTable WHERE FirstName = @FirstName AND LastName = @LastName AND PhoneNumber = @PhoneNumber";

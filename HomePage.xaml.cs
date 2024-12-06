@@ -24,7 +24,7 @@ namespace FinancialApp
             try
             {
                 // Connection string to the UserRegistrationDB database
-                string connectionString = "Data Source=personal\\SQLEXPRESS;Initial Catalog=UserRegistrationDB;Integrated Security=True;Trust Server Certificate=True";
+                string connectionString = DatabaseConfig.ConnectionString;
 
                 // Query to get the balance of the current user
                 string query = @"SELECT Balance FROM UsersTable WHERE PhoneNumber = @PhoneNumber";
@@ -89,7 +89,7 @@ namespace FinancialApp
                         var qrCodeImageSource = ImageSource.FromStream(() => stream);
 
                         // Save QR code data to the UsersTable
-                        string connectionString = "Data Source=personal\\SQLEXPRESS;Initial Catalog=UserRegistrationDB;Integrated Security=True;Trust Server Certificate=True";
+                        string connectionString = DatabaseConfig.ConnectionString;
                         string updateQuery = @"UPDATE UsersTable SET QRCodeData = @QRCodeData WHERE UserID = @UserID";
 
                         try

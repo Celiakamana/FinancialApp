@@ -50,7 +50,7 @@ namespace FinancialApp
             try
             {
                 // Connection string to the database.
-                string connectionString = "Data Source=personal\\SQLEXPRESS;Initial Catalog=UserRegistrationDB;Integrated Security=True;Trust Server Certificate=True";
+                string connectionString = DatabaseConfig.ConnectionString;
                 // Query to check if the phone number and hashed password match an existing record.
                 string query = @"SELECT UserID FROM UsersTable WHERE PhoneNumber = @PhoneNumber AND PasswordHash = @PasswordHash";
 
