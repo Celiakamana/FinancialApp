@@ -36,6 +36,10 @@ jobs:
         # Publish to a directory in the GitHub workspace
         run: dotnet publish -c Release --framework net8.0-windows10.0.19041.0 -o ./publish
 
+      # Debug publish output (validate contents)
+      - name: Debug publish output
+        run: ls -la ./publish
+
       # Upload the artifact for deployment
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -60,6 +64,10 @@ jobs:
         with:
           name: app-package
 
+      # Debug downloaded artifact (validate contents)
+      - name: Debug downloaded artifact
+        run: ls -la ./app-package
+
       # Log in to Azure
       - name: Login to Azure
         uses: azure/login@v2
@@ -75,5 +83,4 @@ jobs:
         with:
           app-name: 'FADemo'
           slot-name: 'Production'
-          package: ./publish # Matches the artifact directory
-
+          package: ./app-package # Matches the artifact directory
