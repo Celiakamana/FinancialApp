@@ -38,7 +38,7 @@ jobs:
 
       # Debug publish output (validate contents)
       - name: Debug publish output
-        run: ls -la ./publish
+        run: Get-ChildItem ./publish -Recurse
 
       # Upload the artifact for deployment
       - name: Upload artifact for deployment job
@@ -66,7 +66,7 @@ jobs:
 
       # Debug downloaded artifact (validate contents)
       - name: Debug downloaded artifact
-        run: ls -la ./app-package
+        run: Get-ChildItem ./app-package -Recurse
 
       # Log in to Azure
       - name: Login to Azure
@@ -83,4 +83,4 @@ jobs:
         with:
           app-name: 'FADemo'
           slot-name: 'Production'
-          package: ./app-package # Matches the artifact directory
+          package: ./publish # Matches the artifact directory
