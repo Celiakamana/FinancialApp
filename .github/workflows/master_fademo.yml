@@ -44,7 +44,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: app-package
-          path: ${{ github.workspace }}/publish
+          path: ${{ github.workspace }}/publish/
 
   deploy:
     runs-on: windows-latest
@@ -81,4 +81,4 @@ jobs:
         with:
           app-name: 'FADemo'
           slot-name: 'Production'
-          package: ./app-package # Matches the artifact directory
+          package: app-package # Match artifact name
