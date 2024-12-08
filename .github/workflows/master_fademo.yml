@@ -33,20 +33,18 @@ jobs:
 
       # Publish the app
       - name: dotnet publish
-        # Publish to a directory in the GitHub workspace
-        run: dotnet publish -c Release --framework net8.0-windows10.0.19041.0 -o ./publish
+        run: dotnet publish -c Release --framework net8.0-windows10.0.19041.0 -o ${{ github.workspace }}/publish
 
       # Debug publish output (validate contents)
       - name: Debug publish output
-        run: Get-ChildItem ./publish -Recurse
+        run: dir ${{ github.workspace }}/publish
 
       # Upload the artifact for deployment
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
-          # Name matches the deployment step's download artifact reference
           name: app-package
-          path: ./publish
+          path: ${{ github.workspace }}/publish
 
   deploy:
     runs-on: windows-latest
@@ -66,7 +64,7 @@ jobs:
 
       # Debug downloaded artifact (validate contents)
       - name: Debug downloaded artifact
-        run: Get-ChildItem ./app-package -Recurse
+        run: dir ./app-package
 
       # Log in to Azure
       - name: Login to Azure
@@ -83,4 +81,4 @@ jobs:
         with:
           app-name: 'FADemo'
           slot-name: 'Production'
-          package: ./publish # Matches the artifact directory
+          package: ${{ github.workspace }}/publish
