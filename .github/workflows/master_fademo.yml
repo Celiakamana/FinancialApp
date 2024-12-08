@@ -28,13 +28,15 @@ jobs:
         run: dotnet build --configuration Release --framework net8.0-windows10.0.19041.0
 
       - name: dotnet publish
-        run: dotnet publish -c Release --framework net8.0-windows10.0.19041.0 -o "${{env.DOTNET_ROOT}}/myapp"
+        # Updated the output directory to a relative path instead of `${{env.DOTNET_ROOT}}` for better artifact access.
+        run: dotnet publish -c Release --framework net8.0-windows10.0.19041.0 -o ${{ github.workspace }}/publish
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
-          name: .MAUI-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+          # Match the artifact name to be consistent with the deployment step.
+          name: app-package # Modified from `.MAUI-app` for clarity and consistency.
+          path: ${{ github.workspace }}/publish # Matches the output directory in the publish step.
 
   deploy:
     runs-on: windows-latest
@@ -43,13 +45,14 @@ jobs:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
-      id-token: write #This is required for requesting the JWT
+      id-token: write # This is required for requesting the JWT
 
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
-          name: .MAUI-app
+          # Ensure the artifact name matches the one uploaded in the build step.
+          name: app-package
 
       - name: Login to Azure
         uses: azure/login@v2
@@ -64,4 +67,5 @@ jobs:
         with:
           app-name: 'FADemo'
           slot-name: 'Production'
-          package: ${{env.DOTNET_ROOT}}/myapp
+          # Correct the package path to reference the downloaded artifact location.
+          package: ${{ github.workspace }}/publish
