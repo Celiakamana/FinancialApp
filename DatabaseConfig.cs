@@ -10,7 +10,7 @@ namespace FinancialApp
     {
         // Centralized connection string
         public static string ConnectionString { get; } =
-            "Data Source=personal\\SQLEXPRESS;Initial Catalog=UserRegistrationDB;Integrated Security=True;Trust Server Certificate=True";
+            "Server=tcp:cik.database.windows.net,1433;Initial Catalog=UsersDB;Persist Security Info=False;User ID=Celiakamana;Password={Environment.GetEnvironmentVariable(\"AZURE_SQL_PASSWORD\")};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
 
     }
 }
