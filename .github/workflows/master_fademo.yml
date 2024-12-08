@@ -14,29 +14,35 @@ jobs:
     runs-on: windows-latest
 
     steps:
+      # Checkout the code
       - uses: actions/checkout@v4
 
+      # Set up .NET Core
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.x'
 
+      # Restore dependencies
       - name: Restore dependencies
         run: dotnet restore
 
+      # Build the app
       - name: Build with dotnet
         run: dotnet build --configuration Release --framework net8.0-windows10.0.19041.0
 
+      # Publish the app
       - name: dotnet publish
-        # Updated the output directory to a relative path instead of `${{env.DOTNET_ROOT}}` for better artifact access.
-        run: dotnet publish -c Release --framework net8.0-windows10.0.19041.0 -o ${{ github.workspace }}/publish
+        # Publish to a directory in the GitHub workspace
+        run: dotnet publish -c Release --framework net8.0-windows10.0.19041.0 -o ./publish
 
+      # Upload the artifact for deployment
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
-          # Match the artifact name to be consistent with the deployment step.
-          name: app-package # Modified from `.MAUI-app` for clarity and consistency.
-          path: ${{ github.workspace }}/publish # Matches the output directory in the publish step.
+          # Name matches the deployment step's download artifact reference
+          name: app-package
+          path: ./publish
 
   deploy:
     runs-on: windows-latest
@@ -45,15 +51,16 @@ jobs:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
-      id-token: write # This is required for requesting the JWT
+      id-token: write # Required for JWT
 
     steps:
+      # Download the artifact from the build step
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
-          # Ensure the artifact name matches the one uploaded in the build step.
           name: app-package
 
+      # Log in to Azure
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -61,11 +68,12 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_D32671F0D1E14E379D7E76F5487A40BC }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_1B68A52D96AC4FA7AB4FF995FCACAF0B }}
 
+      # Deploy the app to Azure Web App
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'FADemo'
           slot-name: 'Production'
-          # Correct the package path to reference the downloaded artifact location.
-          package: ${{ github.workspace }}/publish
+          package: ./publish # Matches the artifact directory
+
