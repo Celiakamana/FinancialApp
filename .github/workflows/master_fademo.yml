@@ -64,7 +64,7 @@ jobs:
 
       # Debug downloaded artifact (validate contents)
       - name: Debug downloaded artifact
-        run: dir ./app-package
+        run: dir ./
 
       # Log in to Azure
       - name: Login to Azure
@@ -81,4 +81,4 @@ jobs:
         with:
           app-name: 'FADemo'
           slot-name: 'Production'
-          package: app-package # Match artifact name
+          package: ./ # Use the current directory containing the artifact
